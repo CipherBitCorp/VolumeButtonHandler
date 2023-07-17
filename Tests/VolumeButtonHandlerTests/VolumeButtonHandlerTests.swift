@@ -8,5 +8,10 @@ final class VolumeButtonHandlerTests: XCTestCase {
 
         // Defining Test Cases and Test Methods
         // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
+        
+        let volumeButtonHandler = VolumeButtonHandler()
+        volumeButtonHandler.startHandler(disableSystemVolumeHandler: false)
+        
+        XCTAssertNotNil(volumeButtonHandler)
     }
 }
