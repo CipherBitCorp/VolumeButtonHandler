@@ -7,7 +7,7 @@ import AVFoundation
 import AVFAudio
 
 public class VolumeButtonHandler: NSObject {
-    typealias VolumeButtonBlock = () -> Void
+    public typealias VolumeButtonBlock = () -> Void
 
     var initialVolume: CGFloat = 0.0
     var session: AVAudioSession?
@@ -27,11 +27,11 @@ public class VolumeButtonHandler: NSObject {
     static let minVolume: CGFloat = 0.00001
     let sessionContext = UnsafeMutableRawPointer.allocate(byteCount: MemoryLayout<Int>.size, alignment: MemoryLayout<Int>.alignment)
     
-    var upBlock: VolumeButtonBlock?
-    var downBlock: VolumeButtonBlock?
-    var currentVolume: Float = 0.0
+    public var upBlock: VolumeButtonBlock?
+    public var downBlock: VolumeButtonBlock?
+    public var currentVolume: Float = 0.0
     
-    override init() {
+    override public init() {
         appIsActive = true
         sessionCategory = AVAudioSession.Category.playback.rawValue
         sessionOptions = AVAudioSession.CategoryOptions.mixWithOthers
@@ -56,14 +56,14 @@ public class VolumeButtonHandler: NSObject {
         sessionContext.deallocate()
     }
     
-    func startHandler(disableSystemVolumeHandler: Bool) {
+    public func startHandler(disableSystemVolumeHandler: Bool) {
         self.setupSession()
         volumeView?.isHidden = false
         self.disableSystemVolumeHandler = disableSystemVolumeHandler
         self.perform(#selector(setupSession), with: nil, afterDelay: 1)
     }
 
-    func stopHandler() {
+    public func stopHandler() {
         guard isStarted else { return }
         isStarted = false
         volumeView?.isHidden = false
@@ -116,7 +116,7 @@ public class VolumeButtonHandler: NSObject {
         }
     }
     
-    func setInitialVolume() {
+    public func setInitialVolume() {
         guard let session = session else { return }
         initialVolume = CGFloat(session.outputVolume)
         if initialVolume > VolumeButtonHandler.maxVolume {
@@ -139,7 +139,7 @@ public class VolumeButtonHandler: NSObject {
         }
     }
     
-    static func volumeButtonHandler(upBlock: VolumeButtonBlock?, downBlock: VolumeButtonBlock?) -> VolumeButtonHandler {
+    public static func volumeButtonHandler(upBlock: VolumeButtonBlock?, downBlock: VolumeButtonBlock?) -> VolumeButtonHandler {
         let instance = VolumeButtonHandler()
         instance.upBlock = upBlock
         instance.downBlock = downBlock
