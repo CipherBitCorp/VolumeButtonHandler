@@ -6,7 +6,7 @@ import MediaPlayer
 import AVFoundation
 import AVFAudio
 
-class VolumeButtonHandler: NSObject {
+public class VolumeButtonHandler: NSObject {
     typealias VolumeButtonBlock = () -> Void
 
     var initialVolume: CGFloat = 0.0
@@ -146,7 +146,7 @@ class VolumeButtonHandler: NSObject {
         return instance
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == sessionContext {
             guard let change = change,
                   let newVolume = change[.newKey] as? Float,
