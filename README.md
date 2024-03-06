@@ -19,4 +19,8 @@ Simply do this:
         debugPrint("Down block")
     }
 
+Also don't forget to do 
+```volumeHandler.stopHandler() ```
+after you're done using it.
+
 Happy coding!
