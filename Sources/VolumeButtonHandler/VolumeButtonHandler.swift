@@ -42,7 +42,7 @@ public class VolumeButtonHandler: NSObject {
         
         UIApplication.shared.windows.first?.addSubview(volumeView!)
         
-        volumeView?.isHidden = true
+        volumeView?.isHidden = false
         exactJumpsOnly = false
     }
     
@@ -146,6 +146,15 @@ public class VolumeButtonHandler: NSObject {
         return instance
     }
     
+
+    public func increaseVolume(amount: Float) {
+        currentVolume += amount
+    }
+
+    public func decreaseVolume(amount: Float) {
+        currentVolume -= amount
+    }
+
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == sessionContext {
             guard let change = change,
@@ -172,8 +181,8 @@ public class VolumeButtonHandler: NSObject {
             
             let difference = abs(newVolume - oldVolume)
             
-            debugPrint("Old Vol:%f New Vol:%f Difference = %f", oldVolume, newVolume, difference)
-            
+            NSLog("Old Vol: %.2f New Vol: %.2f Difference = %.2f", oldVolume, newVolume, difference)
+
             if exactJumpsOnly && difference < 0.062 && (newVolume == 1.0 || newVolume == 0.0) {
                 debugPrint("Using a non-standard Jump of %f (%f-%f) which is less than the .0625 because a press of the volume button resulted in hitting min or max volume", difference, oldVolume, newVolume)
             } else if exactJumpsOnly && (difference > 0.063 || difference < 0.062) {
