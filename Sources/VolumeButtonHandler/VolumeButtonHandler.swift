@@ -213,7 +213,7 @@ public class VolumeButtonHandler: NSObject {
     func setSystemVolume(_ volume: CGFloat) {
         let volumeView = MPVolumeView(frame: .zero)
         if let volumeSlider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            DispatchQueue.main.async {
                 volumeSlider.value = Float(volume)
             }
         }

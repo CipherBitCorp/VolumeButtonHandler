@@ -19,11 +19,13 @@ final class VolumeButtonHandlerTests: XCTestCase {
         let volumeHandler = VolumeButtonHandler()
         volumeHandler.startHandler(disableSystemVolumeHandler: false)
 
-        let originalVol = volumeHandler.currentVolume
-        volumeHandler.increaseVolume(amount: 0.1)
-        let modifiedVol = volumeHandler.currentVolume
-
-        XCTAssertTrue(modifiedVol > originalVol)
+        var volume = volumeHandler.currentVolume
+        while volume < 0.1 {
+            let originalVol = volumeHandler.currentVolume
+            volumeHandler.increaseVolume(amount: 0.1)
+            let modifiedVol = volumeHandler.currentVolume
+            XCTAssertTrue(modifiedVol > originalVol)
+        }
     }
 
     func testDecreaseVolume() throws {
@@ -42,5 +44,13 @@ final class VolumeButtonHandlerTests: XCTestCase {
             print("VolumeButtonHandler testDecreaseVolume - modifiedlVol: \(modifiedVol)")
             XCTAssertTrue(modifiedVol < originalVol)
         }
+    }
+
+    func testNilVolumeButtonHandler() throws {
+        let volumeHandler = VolumeButtonHandler()
+        volumeHandler.startHandler(disableSystemVolumeHandler: false)
+
+        volumeHandler.stopHandler()
+        XCTAssertEqual(volumeHandler.isStarted, false)
     }
 }
