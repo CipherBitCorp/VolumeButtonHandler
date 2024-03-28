@@ -27,8 +27,16 @@ public class VolumeButtonHandler: NSObject {
     static let minVolume: CGFloat = 0.00001
     let sessionContext = UnsafeMutableRawPointer.allocate(byteCount: MemoryLayout<Int>.size, alignment: MemoryLayout<Int>.alignment)
     
+    /// Called when volume rocker up button is pressed but the outcome doesn't matter
+    /// For example if the volume is already at max and the user presses up again
+    public var volumeUpPressed: VolumeButtonBlock?
+    /// Called when volume rocker down button is pressed and the outcome of press doesn't matter
+    public var volumeDownPressed: VolumeButtonBlock?
+    /// Called when volume rocker up button was pressed AND volume has actually increased
     public var upBlock: VolumeButtonBlock?
+    /// Called when volume rocker down button was pressed AND volume has actually decreased
     public var downBlock: VolumeButtonBlock?
+    /// Current volume level
     public var currentVolume: Float = 0.0
     
     override public init() {
@@ -162,9 +170,18 @@ public class VolumeButtonHandler: NSObject {
                   let oldVolume = change[.oldKey] as? Float else {
                 return
             }
-            
-            if !appIsActive {
-                // Probably control center, skip blocks
+
+            // If both newVolume AND oldVolume are both 0.99 or greater, up button was tapped
+            // OR if newVolume is greater than oldVolume, up button was tapped
+            if (newVolume >= 0.99 && oldVolume >= 0.99) || (newVolume > oldVolume) {
+                volumeUpPressed?()
+            }
+            if (newVolume <= 0.01 && oldVolume <= 0.01) || (newVolume < oldVolume) {
+                volumeDownPressed?()
+            }
+
+            // Probably control center, skip blocks
+            guard appIsActive else {
                 return
             }
             
