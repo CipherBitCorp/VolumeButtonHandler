@@ -185,7 +185,7 @@ public class VolumeButtonHandler: NSObject {
                 return
             }
             
-            if disableSystemVolumeHandler && newVolume == Float(initialVolume) {
+            if disableSystemVolumeHandler && newVolume == oldVolume {
                 // Resetting volume, skip blocks
                 return
             } else if isAdjustingInitialVolume {
@@ -221,7 +221,9 @@ public class VolumeButtonHandler: NSObject {
             }
             
             // Reset volume
-            setSystemVolume(initialVolume)
+            if newVolume != Float(initialVolume) {
+                setSystemVolume(initialVolume)
+            }
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
