@@ -91,13 +91,13 @@ public class VolumeButtonHandler: NSObject {
             print("Error setupSession: \(error)")
         }
         
-        session?.addObserver(self, forKeyPath: VolumeButtonHandler.sessionVolumeKeyPath, options: [.old, .new], context: sessionContext)
-        
+        session?.addObserver(self, forKeyPath: VolumeButtonHandler.sessionVolumeKeyPath, options: [.old, .new, .initial], context: sessionContext)
+
         NotificationCenter.default.addObserver(self, selector: #selector(audioSessionInterruped(notification:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidChangeActive(notification:)), name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidChangeActive(notification:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         
-        volumeView?.isHidden = !disableSystemVolumeHandler
+        volumeView?.isHidden = disableSystemVolumeHandler
     }
 
     func useExactJumpsOnly(enabled: Bool) {
@@ -147,8 +147,10 @@ public class VolumeButtonHandler: NSObject {
         }
     }
     
-    public static func volumeButtonHandler(upBlock: VolumeButtonBlock?, downBlock: VolumeButtonBlock?) -> VolumeButtonHandler {
+    public static func volumeButtonHandler(volumeUpBlock: VolumeButtonBlock? = nil, volumeDownBlock: VolumeButtonBlock? = nil, upBlock: VolumeButtonBlock?, downBlock: VolumeButtonBlock?) -> VolumeButtonHandler {
         let instance = VolumeButtonHandler()
+        instance.volumeUpPressed = volumeUpBlock
+        instance.volumeDownPressed = volumeDownBlock
         instance.upBlock = upBlock
         instance.downBlock = downBlock
         return instance
@@ -207,14 +209,15 @@ public class VolumeButtonHandler: NSObject {
                 setInitialVolume()
                 return
             }
-            
+
+            currentVolume = newVolume
+
             if newVolume > oldVolume {
                 upBlock?()
             } else {
                 downBlock?()
             }
-            currentVolume = newVolume
-            
+
             if !disableSystemVolumeHandler {
                 // Don't reset volume if default handling is enabled
                 return
